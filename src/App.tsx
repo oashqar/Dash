@@ -14,9 +14,9 @@ function App() {
           </div>
 
           <nav className="hidden md:flex items-center gap-8">
-            <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">Solutions</a>
-            <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">Why Us</a>
-            <a href="#" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">Customers</a>
+            <a href="#solutions" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">Solutions</a>
+            <a href="#why-us" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">Why Us</a>
+            <a href="#customers" className="text-slate-600 hover:text-slate-900 transition-colors font-medium">Customers</a>
           </nav>
 
           <div className="flex items-center gap-4">
@@ -133,7 +133,7 @@ function App() {
         </div>
 
         {/* Features Section */}
-        <div className="grid md:grid-cols-3 gap-6 mb-32">
+        <div id="solutions" className="grid md:grid-cols-3 gap-6 mb-32 scroll-mt-24">
           {/* Feature 1 */}
           <div className="bg-white border border-slate-200 rounded-2xl p-8 hover:shadow-xl transition-shadow">
             <div className="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
@@ -211,7 +211,7 @@ function App() {
         </div>
 
         {/* Solution Section */}
-        <div className="text-center max-w-4xl mx-auto mb-20">
+        <div id="why-us" className="text-center max-w-4xl mx-auto mb-20 scroll-mt-24">
           {/* Heading */}
           <h2 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
             <span className="text-slate-900">Why </span>
@@ -263,7 +263,7 @@ function App() {
       </section>
 
       {/* Target Audience Section */}
-      <section className="max-w-7xl mx-auto px-6 py-20 bg-gradient-to-br from-blue-50 via-white to-blue-50 rounded-3xl mb-20">
+      <section id="customers" className="max-w-7xl mx-auto px-6 py-20 bg-gradient-to-br from-blue-50 via-white to-blue-50 rounded-3xl mb-20 scroll-mt-24">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Left Content */}
           <div>
