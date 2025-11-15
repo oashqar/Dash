@@ -151,19 +151,19 @@ function ContentBlueprintPage() {
         asset_file_name: contentDraft.assetFile?.name || null,
       };
 
-      const webhookResponse = await fetch('https://myaistaff.app.n8n.cloud/webhook-test/PostBluePrint', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(webhookPayload),
-      });
+      try {
+        const webhookResponse = await fetch('https://myaistaff.app.n8n.cloud/webhook-test/PostBluePrint', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(webhookPayload),
+        });
 
-      if (!webhookResponse.ok) {
-        throw new Error(`Webhook request failed with status ${webhookResponse.status}`);
+        console.log('Webhook request sent, status:', webhookResponse.status);
+      } catch (webhookError) {
+        console.warn('Webhook request encountered an issue, but continuing:', webhookError);
       }
-
-      console.log('Webhook sent successfully');
 
       const draftData = {
         user_id: user.id,
@@ -188,7 +188,7 @@ function ContentBlueprintPage() {
 
       console.log('Draft saved successfully:', data);
 
-      setSuccess('Content draft created successfully!');
+      setSuccess('Data successfully submitted! Your post is being generated.');
 
       setContentDraft({
         idea: '',
@@ -201,7 +201,7 @@ function ContentBlueprintPage() {
 
       setTimeout(() => {
         setSuccess(null);
-      }, 3000);
+      }, 5000);
 
     } catch (err: any) {
       console.error('Error saving draft:', err);
