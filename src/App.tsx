@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LandingPage from './pages/LandingPage';
 import AuthPage from './pages/AuthPage';
 import ContentBlueprintPage from './pages/ContentBlueprintPage';
+import ContentReviewPage from './pages/ContentReviewPage';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -15,6 +16,14 @@ function App() {
           element={
             <ProtectedRoute>
               <ContentBlueprintPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/content-review"
+          element={
+            <ProtectedRoute>
+              <ContentReviewPage />
             </ProtectedRoute>
           }
         />
