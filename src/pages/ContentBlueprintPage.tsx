@@ -185,9 +185,9 @@ function ContentBlueprintPage() {
       let generatedImageUrl = null;
 
       try {
-        console.log('Sending webhook request to: https://myaistaff.app.n8n.cloud/webhook/PostBluePrint');
+        console.log('Sending webhook request to: https://myaistaff.app.n8n.cloud/webhook-test/PostBluePrint');
 
-        const webhookResponse = await fetch('https://myaistaff.app.n8n.cloud/webhook/PostBluePrint', {
+        const webhookResponse = await fetch('https://myaistaff.app.n8n.cloud/webhook-test/PostBluePrint', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
