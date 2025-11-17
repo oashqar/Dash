@@ -234,12 +234,12 @@ function ContentBlueprintPage() {
           if (Array.isArray(webhookData) && webhookData.length > 0) {
             const responseData = webhookData[0];
             console.log('Processing array response, first element:', responseData);
-            extractedText = responseData.facebookOutput?.[0] || null;
-            extractedImageUrl = responseData.url?.[0] || null;
+            extractedText = responseData.generated_text || responseData.facebookOutput?.[0] || null;
+            extractedImageUrl = responseData.generated_image_url || responseData.url?.[0] || null;
           } else if (typeof webhookData === 'object' && webhookData !== null) {
             console.log('Processing object response');
-            extractedText = webhookData.text || webhookData.generated_text || webhookData.facebookOutput?.[0] || null;
-            extractedImageUrl = webhookData.url?.[0] || webhookData.image_url || webhookData.generated_image_url || null;
+            extractedText = webhookData.generated_text || webhookData.text || webhookData.facebookOutput?.[0] || null;
+            extractedImageUrl = webhookData.generated_image_url || webhookData.url?.[0] || webhookData.image_url || null;
           }
 
           console.log('=== EXTRACTED DATA ===');
@@ -586,96 +586,128 @@ function ContentBlueprintPage() {
               </p>
             </div>
           </form>
-        </div>
 
-        {waitingForWebhook && (
-          <div className="mt-8 bg-white rounded-2xl shadow-xl border border-slate-200 p-8">
-            <div className="text-center">
-              <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Generating Your Content</h3>
-              <p className="text-slate-600">Please wait while we create your content. This may take up to 2 minutes...</p>
-            </div>
-          </div>
-        )}
+          {/* Webhook Response Section - Placeholder/Loading/Result */}
+          <div className="mt-8">
+            <h2 className="text-xl font-bold text-slate-900 mb-6 pb-3 border-b border-slate-200">
+              Generated Content Preview
+            </h2>
 
-        {!waitingForWebhook && (generatedText || generatedImageUrl) && (
-          <div className="mt-8 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200 p-6">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-8 h-8 text-green-600" />
-                <div>
-                  <h3 className="text-2xl font-bold text-slate-900">Content Generated Successfully!</h3>
-                  <p className="text-slate-600">Review your AI-generated content below</p>
+            {!waitingForWebhook && !generatedText && !generatedImageUrl && !webhookTimeout && (
+              <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl border-2 border-dashed border-slate-300 p-12">
+                <div className="text-center">
+                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white shadow-md mb-6">
+                    <Bot className="w-10 h-10 text-slate-400" />
+                  </div>
+                  <h3 className="text-lg font-bold text-slate-700 mb-2">Awaiting Content Generation</h3>
+                  <p className="text-slate-500 max-w-md mx-auto">
+                    Your AI-generated content will appear here once the webhook responds. Fill out the form above and click "Generate Content Draft" to begin.
+                  </p>
                 </div>
               </div>
-            </div>
+            )}
 
-            <div className="p-8 space-y-8">
-              {generatedImageUrl && (
-                <div>
-                  <p className="text-sm font-semibold text-slate-700 mb-4">Generated Image</p>
-                  <div className="rounded-xl overflow-hidden border border-slate-200 shadow-lg">
-                    <img
-                      src={generatedImageUrl}
-                      alt="Generated content"
-                      className="w-full h-auto"
-                      onError={(e) => {
-                        e.currentTarget.style.display = 'none';
-                        console.error('Failed to load image:', generatedImageUrl);
+            {waitingForWebhook && (
+              <div className="bg-white rounded-2xl shadow-xl border border-blue-200 p-8">
+                <div className="text-center">
+                  <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">Generating Your Content</h3>
+                  <p className="text-slate-600 mb-4">Please wait while we create your content. This may take up to 2 minutes...</p>
+                  <div className="max-w-md mx-auto bg-slate-50 rounded-lg p-4 border border-slate-200">
+                    <p className="text-sm text-slate-600 text-left">
+                      <span className="font-semibold">Status:</span> Waiting for webhook response...
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {!waitingForWebhook && (generatedText || generatedImageUrl) && (
+              <div className="bg-white rounded-2xl shadow-xl border border-green-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200 p-6">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="w-8 h-8 text-green-600" />
+                    <div>
+                      <h3 className="text-xl font-bold text-slate-900">Content Generated Successfully!</h3>
+                      <p className="text-slate-600">Review your AI-generated content below</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-8 space-y-6">
+                  {generatedText && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <FileText className="w-5 h-5 text-blue-600" />
+                        <p className="text-sm font-semibold text-slate-700">Generated Text</p>
+                      </div>
+                      <div className="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                        <p className="text-slate-900 text-base leading-relaxed whitespace-pre-wrap">{generatedText}</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {generatedImageUrl && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <Upload className="w-5 h-5 text-blue-600" />
+                        <p className="text-sm font-semibold text-slate-700">Generated Image</p>
+                      </div>
+                      <div className="rounded-xl overflow-hidden border border-slate-200 shadow-lg">
+                        <img
+                          src={generatedImageUrl}
+                          alt="Generated content"
+                          className="w-full h-auto"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            console.error('Failed to load image:', generatedImageUrl);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="pt-4 flex gap-4">
+                    <button
+                      onClick={() => {
+                        setGeneratedText(null);
+                        setGeneratedImageUrl(null);
+                        setSuccess(null);
                       }}
-                    />
+                      className="flex-1 px-6 py-3 bg-white border-2 border-slate-300 text-slate-700 rounded-lg font-semibold hover:bg-slate-50 hover:border-slate-400 transition-all"
+                    >
+                      Create New Content
+                    </button>
+                    <Link
+                      to="/content-review"
+                      className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all hover:shadow-xl hover:shadow-blue-600/30 text-center"
+                    >
+                      Go to Review Page
+                    </Link>
                   </div>
                 </div>
-              )}
-
-              {generatedText && (
-                <div>
-                  <p className="text-sm font-semibold text-slate-700 mb-4">Generated Text</p>
-                  <div className="bg-slate-50 rounded-xl p-6 border border-slate-200">
-                    <p className="text-slate-900 text-lg leading-relaxed whitespace-pre-wrap">{generatedText}</p>
-                  </div>
-                </div>
-              )}
-
-              <div className="pt-4 flex gap-4">
-                <button
-                  onClick={() => {
-                    setGeneratedText(null);
-                    setGeneratedImageUrl(null);
-                    setSuccess(null);
-                  }}
-                  className="flex-1 px-6 py-3 bg-white border-2 border-slate-300 text-slate-700 rounded-lg font-semibold hover:bg-slate-50 hover:border-slate-400 transition-all"
-                >
-                  Create New Content
-                </button>
-                <Link
-                  to="/content-review"
-                  className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all hover:shadow-xl hover:shadow-blue-600/30 text-center"
-                >
-                  Go to Review Page
-                </Link>
               </div>
-            </div>
-          </div>
-        )}
+            )}
 
-        {webhookTimeout && (
-          <div className="mt-8 bg-white rounded-2xl shadow-xl border border-amber-200 p-8">
-            <div className="text-center">
-              <AlertCircle className="w-12 h-12 text-amber-600 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Request Timed Out</h3>
-              <p className="text-slate-600 mb-4">
-                The content generation is taking longer than expected. Your draft has been saved and the content may still be processing.
-              </p>
-              <Link
-                to="/content-review"
-                className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all"
-              >
-                Check Review Page
-              </Link>
-            </div>
+            {webhookTimeout && (
+              <div className="bg-white rounded-2xl shadow-xl border border-amber-200 p-8">
+                <div className="text-center">
+                  <AlertCircle className="w-12 h-12 text-amber-600 mx-auto mb-4" />
+                  <h3 className="text-xl font-bold text-slate-900 mb-2">Request Timed Out</h3>
+                  <p className="text-slate-600 mb-4">
+                    The content generation is taking longer than expected. Your draft has been saved and the content may still be processing.
+                  </p>
+                  <Link
+                    to="/content-review"
+                    className="inline-block px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all"
+                  >
+                    Check Review Page
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
-        )}
+        </div>
 
         <div className="text-center mt-8 space-y-3">
           <div>
