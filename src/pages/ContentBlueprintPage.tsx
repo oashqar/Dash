@@ -747,7 +747,7 @@ function ContentBlueprintPage() {
               Generated Content Preview
             </h2>
 
-            {!waitingForWebhook && !generatedText && !generatedImageUrl && !webhookTimeout && (
+            {!waitingForWebhook && !generatedText && !generatedImageUrl && !generatedVideoUrl && !webhookTimeout && (
               <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl border-2 border-dashed border-slate-300 p-12">
                 <div className="text-center">
                   <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white shadow-md mb-6">
@@ -776,7 +776,7 @@ function ContentBlueprintPage() {
               </div>
             )}
 
-            {!waitingForWebhook && (generatedText || generatedImageUrl) && (
+            {!waitingForWebhook && (generatedText || generatedImageUrl || generatedVideoUrl) && (
               <div className="bg-white rounded-2xl shadow-xl border border-green-200 overflow-hidden">
                 <div className="bg-gradient-to-r from-green-50 to-emerald-50 border-b border-green-200 p-6">
                   <div className="flex items-center gap-3">
@@ -821,11 +821,34 @@ function ContentBlueprintPage() {
                     </div>
                   )}
 
+                  {generatedVideoUrl && (
+                    <div>
+                      <div className="flex items-center gap-2 mb-3">
+                        <Upload className="w-5 h-5 text-blue-600" />
+                        <p className="text-sm font-semibold text-slate-700">Generated Video</p>
+                      </div>
+                      <div className="rounded-xl overflow-hidden border border-slate-200 shadow-lg">
+                        <video
+                          src={generatedVideoUrl}
+                          controls
+                          className="w-full h-auto"
+                          onError={(e) => {
+                            e.currentTarget.style.display = 'none';
+                            console.error('Failed to load video:', generatedVideoUrl);
+                          }}
+                        >
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
+                    </div>
+                  )}
+
                   <div className="pt-4 flex gap-4">
                     <button
                       onClick={() => {
                         setGeneratedText(null);
                         setGeneratedImageUrl(null);
+                        setGeneratedVideoUrl(null);
                         setSuccess(null);
                       }}
                       className="flex-1 px-6 py-3 bg-white border-2 border-slate-300 text-slate-700 rounded-lg font-semibold hover:bg-slate-50 hover:border-slate-400 transition-all"

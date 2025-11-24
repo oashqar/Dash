@@ -15,6 +15,7 @@ interface ContentDraft {
   status: string;
   generated_text: string | null;
   generated_image_url: string | null;
+  generated_video_url: string | null;
   generated_at: string | null;
 }
 
@@ -153,6 +154,7 @@ function ContentReviewPage() {
 
   const contentText = latestDraft?.generated_text || '';
   const imageUrl = latestDraft?.generated_image_url || '';
+  const videoUrl = latestDraft?.generated_video_url || '';
   const platform = latestDraft?.platform || '';
 
   return (
@@ -221,7 +223,7 @@ function ContentReviewPage() {
                   </div>
                 )}
 
-                {!contentText && !imageUrl && latestDraft?.status === 'draft_created' && (
+                {!contentText && !imageUrl && !videoUrl && latestDraft?.status === 'draft_created' && (
                   <div className="text-center py-12 bg-yellow-50 rounded-xl border border-yellow-200">
                     <Loader2 className="w-12 h-12 text-yellow-600 animate-spin mx-auto mb-4" />
                     <p className="text-yellow-900 text-lg font-semibold mb-2">Content is being generated</p>
@@ -253,6 +255,25 @@ function ContentReviewPage() {
                   </div>
                 )}
 
+                {videoUrl && (
+                  <div>
+                    <p className="text-sm font-semibold text-slate-700 mb-4">Generated Video</p>
+                    <div className="rounded-xl overflow-hidden border border-slate-200 shadow-lg">
+                      <video
+                        src={videoUrl}
+                        controls
+                        className="w-full h-auto"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                          console.error('Failed to load video:', videoUrl);
+                        }}
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  </div>
+                )}
+
                 {contentText && (
                   <div>
                     <p className="text-sm font-semibold text-slate-700 mb-4">Generated Text</p>
@@ -276,7 +297,7 @@ function ContentReviewPage() {
                 )}
               </div>
 
-              {(contentText || imageUrl) && (
+              {(contentText || imageUrl || videoUrl) && (
                 <div className="p-8 bg-slate-50 border-t border-slate-200">
                   <div className="grid grid-cols-2 gap-4">
                     <button
