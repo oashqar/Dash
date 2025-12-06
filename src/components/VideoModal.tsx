@@ -38,28 +38,29 @@ export default function VideoModal({ isOpen, onClose }: VideoModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fade-in"
-      onClick={onClose}
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div
-        className="relative w-full max-w-5xl bg-white rounded-2xl shadow-2xl animate-scale-in"
-        onClick={(e) => e.stopPropagation()}
-      >
+        className="absolute inset-0 bg-black bg-opacity-75"
+        onClick={onClose}
+      />
+
+      <div className="relative w-full max-w-4xl mx-4 bg-white rounded-lg shadow-2xl overflow-hidden">
         <button
           onClick={onClose}
-          className="absolute -top-4 -right-4 w-10 h-10 bg-white hover:bg-gray-100 rounded-full flex items-center justify-center shadow-lg transition-all transform hover:scale-110 z-10"
+          className="absolute top-4 right-4 z-10 bg-gray-800 bg-opacity-50 hover:bg-opacity-75 text-white p-2 rounded-full transition-all"
         >
-          <X className="w-6 h-6 text-gray-700" />
+          <X className="w-6 h-6" />
         </button>
 
-        <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl overflow-hidden">
-          <div className="w-full h-full flex items-center justify-center text-gray-500">
-            <div className="text-center">
-              <div className="text-6xl mb-4">🎬</div>
-              <p className="text-lg font-semibold">Demo video coming soon!</p>
-            </div>
-          </div>
+        <div className="aspect-video bg-black">
+          <video
+            controls
+            autoPlay
+            className="w-full h-full"
+            src="/Hailuo_Video_DashAi.mp4"
+          >
+            Your browser does not support the video tag.
+          </video>
         </div>
       </div>
     </div>
